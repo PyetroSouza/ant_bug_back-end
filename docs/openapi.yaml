@@ -23,7 +23,7 @@ paths:
       summary: Adiciona um novo administrador
       description: Adiciona um novo administrador
       requestBody:
-        description: JSON contendo os dados do anovo aluno a ser inserido no sistema
+        description: JSON contendo os dados do novo administrador a ser inserido no sistema
         content:
           application/json:
             schema:
@@ -34,11 +34,13 @@ paths:
           description: Successful operation
         '400':
           description: Invalid input
+        '500':
+          description: Error Internal Server (Controller/Model)
     get:
       tags:
         - Admin
-      summary: Lista todos os alunos
-      description: Listagem de todos os alunos registrados no sistema
+      summary: Lista todos os administradores
+      description: Listagem de todos os administradores registrados no sistema
       responses:
         '200':
           description: successful operation
@@ -47,8 +49,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Admin'          
-           
+                  $ref: '#/components/schemas/Admin'
         '404':
           description: Not Found
   /v1/admin/{id}:
@@ -63,8 +64,9 @@ paths:
           description: ID of pet to return
           required: true
           schema:
-            type: integer
-            format: int64
+            type: array
+            items:
+              $ref: '#/components/schemas/Admin' 
       responses:
         '200':
           description: successful operation
@@ -128,7 +130,7 @@ paths:
      tags:
       - Admin
   /v1/categoria:
-    post: 
+    post:
       tags: 
       - Categoria
     get:
@@ -148,9 +150,38 @@ paths:
     post: 
       tags:
       - Produto
+      summary: Adiciona um novo produto
+      description: Adiciona um novo produto
+      requestBody: 
+        description: JSON contendo os dados do novo Produto
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Produto'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+        '401':
+          description: Invalid input
+        '500':
+          description: Error Internal Server (Controller/Model)
+        '415':
+          description: Erro Content type
     get:
       tags:
       - Produto
+      summary: Listar todos os produtos
+      description: Listagem de todos os produtos registrados no sistema
+      responses:
+        '200': 
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                 $ref: '#/components/schemas/Produto'
   /v1/produto/{id}:
     get:
       tags: 
@@ -305,4 +336,16 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Admin'
+    Categoria:
+      description: 'Objeto que deve ser enviado no Body das requisicoes'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Categoria'
+    Produto:
+      description: Objeto que deve ser enviado no Body nas requisicoes
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Produto'
     
