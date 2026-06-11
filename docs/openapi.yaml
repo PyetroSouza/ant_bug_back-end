@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Projeto do Integrador - Planeta Verde
   description: |-
-   API destinada para controle de produtos veganos
+    API destinada para controle de produtos veganos
   termsOfService: http://swagger.io/terms/
   contact:
     email: pyetroferreirasouzza9@gmail.com
@@ -14,7 +14,21 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-  - url: http://
+  - url: http://localhost:8080
+tags:
+  - name: Admin
+    description: Operações relacionadas aos administradores
+
+  - name: Categoria
+    description: Operações relacionadas às categorias
+
+  - name: Subcategoria
+    description: Operações relacionadas às subcategorias
+
+  - name: Produto
+    description: Operações relacionadas aos produtos
+
+
 paths:
   /v1/admin:
     post:
@@ -23,68 +37,75 @@ paths:
       summary: Adiciona um novo administrador
       description: Adiciona um novo administrador
       requestBody:
-        description: JSON contendo os dados do anovo aluno a ser inserido no sistema
+        description: JSON contendo os dados do novo Admin a ser inserido no sistema
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Admin'
+              $ref: "#/components/schemas/Admin"
         required: true
       responses:
-        '201':
-          description: Successful operation
-        '400':
-          description: Invalid input
+        "201":
+          description: Operação criada com sucesso
+        "400":
+          description: Dados inválidos
+        "415":
+          description: Content Type inválido
+        '505':
+          description: Erro interno do servidor
     get:
       tags:
         - Admin
-      summary: Lista todos os alunos
-      description: Listagem de todos os alunos registrados no sistema
+      summary: Lista todos os administradores
+      description: Listagem de todos os administradores registrados no sistema
       responses:
-        '200':
-          description: successful operation
+        "200":
+          description: Operação realizada com sucesso
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Admin'          
-           
-        '404':
-          description: Not Found
+                  $ref: "#/components/schemas/AdminGet"
+
+        "404":
+          description: administrador não encontrado
   /v1/admin/{id}:
     get:
       tags:
         - Admin
-      summary: Busca um aluno prlo ID
-      description: Retorna um aluno pelo ID
+      summary: Busca um administrador pelo ID
+      description: Retorna um administrador pelo ID
       parameters:
         - name: id
           in: path
-          description: ID of pet to return
+          description: ID do administrador
           required: true
           schema:
             type: integer
             format: int64
       responses:
-        '200':
-          description: successful operation
+        "200":
+          description: Operação realizada com sucesso
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Admin'          
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Pet not found
+                type: integer
+                format: int64
+        "400":
+          description: ID inválido
+        "404":
+          description: Administrador não encontrado
+        '505': 
+          description: Erro interno do servidor
     put:
       tags:
         - Admin
-      summary: Update an existing pet
-      description: Update an existing pet by Id
+      summary: Atualiza um administrador
+      description: Atualiza um administrador existente pelo ID
       parameters:
         - name: id
           in: path
-          description: ID of pet to return
+          description: ID do administrador
           required: true
           schema:
             type: integer
@@ -94,74 +115,424 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Admin'
+              $ref: "#/components/schemas/Admin"
         required: true
       responses:
-        '200':
-          description: Successful operation
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Pet not found
+        "200":
+          description: Administrador atualizado com sucesso
+        "400":
+          description: Dados inválidos
+        "404":
+          description: Administrador não encontrado
+        "415":
+          description: Content Type inválido
+        '505':
+          description: Erro interno no servidor
     delete:
       tags:
         - Admin
-      summary: Delete aluno
-      description: Excluir um aluno
+      summary: Exclui um administrador
+      description: Exclui um administrador pelo ID
       parameters:
         - name: id
           in: path
-          description: ID of pet to return
+          description: ID do administrador
           required: true
           schema:
             type: integer
             format: int64
       responses:
-        '200':
-          description: successful operation
-        '400':
-          description: Invalid ID supplied
-        '404':
-          description: Pet not found
+        "200":
+          description: Administrador removido com sucesso
+        "400":
+          description: Dados inválidos
+        "404":
+          description: Administrador não encontrado
+        "505": 
+          description: Erro interno no servidor
   /v1/admin/login:
     post:
-     tags:
-      - Admin
+      tags:
+        - Admin
+      summary: Realiza login do administrador
+      description: EndPoint responsável pela autenticação do administrador
+      requestBody:
+        description: Dados de login
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+              required: true
+      responses:
+        "200":
+          description: Login realizado com sucesso
+        "400":
+          description: Dados inválidos
+        "401":
+          description: Email ou senha incorretos
+        "500":
+          description: Erro interno do servidor
   /v1/categoria:
-    post: 
-      tags: 
-      - Categoria
+    post:
+      tags:
+        - Categoria
+      summary: Adiciona uma nova categoria
+      description: Cadastra uma nova categoria no sistema
+      requestBody:
+        description: Dados da categoria
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Categoria"
+        required: true
+      responses:
+        "201":
+          description: Categoria criada com sucesso
+        "400":
+          description: Dados inválidos
+        "415":
+          description: Content Type inválido
+        "500":
+          description: Erro interno do servidor
     get:
       tags:
         - Categoria
+      summary: Lista todos as categorias
+      description: Retorna todas as categorias cadastradas
+      responses:
+        "200":
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CategoriaGet"
+        "404":
+          description: Nenhum categoria encontrada
+        "505":
+          description: Erro interno do servidor
   /v1/categoria/{id}:
     get:
       tags:
-      - Categoria
-    put: 
-      tags:
-      - Categoria
-    delete:
-      tags:
-      - Categoria
-  /v1/produto:
-    post: 
-      tags:
-      - Produto
-    get:
-      tags:
-      - Produto
-  /v1/produto/{id}:
-    get:
-      tags: 
-      - Produto
+        - Categoria
+      summary: Busca uma categoria pelo ID
+      description: Retorna uma categoria específica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da categoria
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoriaGet"
+        "400":
+          description: ID inválido
+        "404":
+          description: Categoria não encontrada
+        "500":
+          description: Erro interno do servidor
     put:
       tags:
-      - Produto
-    delete: 
-      tags: 
-      - Produto
+        - Categoria
+      summary: Atualiza uma categoria
+      description: Atualiza uma categoria existente por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID na categoria
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Dados atualizados da categoria
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Categoria"
+        required: true
+      responses:
+        "200":
+          description: Categoria atualizada com sucesso
+        "400":
+          description: Dados inválidos
+        "404":
+          description: Categoria não encontrada
+        "415":
+          description: Content Type inválido
+        "500":
+          description: Erro interno do servidor
+    delete:
+      tags:
+        - Categoria
+      summary: Exclui uma categoria
+      description: Remove uma categoria do sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da categoria
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "202":
+          description: Categoria removida com sucesso
+        "400":
+          description: ID inválido
+        "404":
+          description: Categoria não encontrada
+        "500":
+          description: Erro interno do servidor
+  /v1/subcategoria:
+    post:
+      tags:
+        - Subcategoria
+      summary: Adiciona uma nova subcategoria
+      description: Cadastra uma nova categoria subcategoria vinculada a uma categoria
+      requestBody:
+        description: Dados da subcategoria
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Subcategoria"
+        required: true
+      responses:
+        "201":
+          description: Subcategoria criada com sucesso
+        "400":
+          description: Dados inválidos
+        "415":
+          description: Content Type inválido
+        "500":
+          description: Erro interno do servidor
+    get:
+      tags:
+        - Subcategoria
+      summary: Lista todas as subcategorias
+      description: Retorna todas as subcategorias cadastradas
+      responses:
+        "200":
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SubcategoriaGet"
+        "404":
+          description: Nehnhuma subcategoria encontrada
+        "500":
+          description: Erro Interno do servidor
+  /v1/subcategoria/{id}:
+    get:
+      tags:
+        - Subcategoria
+      summary: Busca uma subcategoria pelo ID
+      description: Retorna uma subcategoria específica
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da subcategoria
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubcategoriaGet"
+        "400":
+          description: ID inválido
+        "404":
+          description: Subcategoria não encontrada
+        "500":
+          description: Erro interno do servidor
+    put:
+      tags:
+        - Subcategoria
+      summary: Atualiza subcategoria
+      description: Atualiza os dados de uma subcategoria existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da subcategoria
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Dados atualizados da subcategoria
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Subcategoria"
+        required: true
+      responses:
+        "200":
+          description: Subcategoria atualizada com sucesso
+        "400":
+          description: Dados inválidos
+        "404":
+          description: Subcategoria não encontrada
+        "415":
+          description: Content Type inválido
+        "500":
+          description: Erro interno do servidor
+    delete:
+      tags:
+        - Subcategoria
+      summary: Exclui uma subcategoria
+      description: Remove uma subcategoria do sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID da subcategoria
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Subcategoria removida com sucesso
+        "400":
+          description: ID inválido
+        "404":
+          description: Subcategoria não encontrada
+        "500":
+          description: Erro interno do servidor
 
+  /v1/produto:
+    post:
+      tags:
+        - Produto
+      summary: Adiciona um novo produto
+      description: Cadastre um novo produto no sistema
+      requestBody:
+        description: Dados do produto
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Produto"
+        required: true
+      responses:
+        "201":
+          description: Produto criado com sucesso
+        "400":
+          description: Dados inválidos
+        "415":
+          description: Content Type inválido
+        "500":
+          description: Erro interno do servidor
+    get:
+      tags:
+        - Produto
+      summary: Lista todos os produtos
+      description: Retorna todos os produtos cadastrados
+      responses:
+        "200":
+          description: Operação realizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProdutoGet"
+        "404":
+          description: Nenhum produto encontrado
+        "505":
+          description: Erro interno do servidor
+  /v1/produto/{id}:
+    get:
+      tags:
+        - Produto
+      summary: Busca um produto pelo id
+      description: Retorna um produto específico
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Operação
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProdutoGet"
+        "400":
+          description: ID inválido
+        "404":
+          description: Produto não encontrado
+        "505":
+          description: Erro interno do servidor
+    put:
+      tags:
+        - Produto
+      summary: Atualiza um produto
+      description: Atualiza os dados de um produto existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Dados atualizados do produto
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Produto"
+        required: true
+      responses:
+        "200":
+          description: Produto atualizado com sucesso
+        "400":
+          description: Dados inválidos
+        "404":
+          description: Produto não encontrado
+        "415":
+          description: Content Type inválido
+        "500":
+          description: Erro interno do servidor
+    delete:
+      tags:
+        - Produto
+      summary: Exclui um produto
+      description: Remove um produto do sistema
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID do produto
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "200":
+          description: Produto removido com sucesso
+        "400":
+          description: ID inválido
+        "404":
+          description: Produto não encontrado
+        "500":
+          description: Erro interno do servidor
 components:
   schemas:
     Admin:
@@ -174,18 +545,18 @@ components:
         id:
           type: integer
           minimum: 1
-        nome: 
+        nome:
           type: string
           description: Nome do Administrador
           minLength: 3
           maxLength: 100
         email:
-          type: string 
+          type: string
           format: email
           description: Email utilizado para Login
           minLength: 5
           maxLength: 256
-        senha: 
+        senha:
           type: string
           description: Senha do Administrador
           minLength: 8
@@ -195,8 +566,8 @@ components:
       required:
         - nome
         - descricao
-        - preco
-        - categoria_id
+        - detalhes
+        - imagem
       type: object
       properties:
         id:
@@ -204,25 +575,18 @@ components:
           minimum: 1
         nome:
           type: string
-          description: Nome do produto
           minLength: 3
           maxLength: 100
         descricao:
           type: string
-          description: Descrição do produto
-        preco:
-          type: number
-          format: double
-          minimum: 0
-        estoque: 
-          type: integer
-          minimum: 0
+        detalhes:
+          type: string
         imagem:
           type: string
           format: uri
           description: Url da imagem do produto
           maxLength: 255
-        categoria_id:
+        subcategoria_id:
           type: integer
           minimum: 1
 
@@ -231,15 +595,32 @@ components:
         - nome
       type: object
       properties:
-        id: 
+        id:
           type: integer
           minimum: 1
-
         nome:
           type: string
-          description: Descrição da categoria
+          description: Nome da categoria
           minLength: 3
-          maxLength: 255
+          maxLength: 100
+
+    Subcategoria:
+      required:
+        - nome
+        - categoria_id
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        nome:
+          type: string
+          description: Nome da subcategoria
+          minLength: 3
+          maxLength: 100
+        categoria_id:
+          type: integer
+          minimum: 1
 
     Login:
       required:
@@ -251,58 +632,113 @@ components:
           type: string
           format: email
           maxLength: 255
-        senha: 
+        senha:
           type: string
           minLength: 8
           maxLength: 255
+
+    CategoriaProduto:
+      required:
+        - categoria_id
+        - produto_id
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        categoria_id:
+          type: integer
+          minimum: 1
+
     AdminGet:
       required:
         - id
       type: object
-      properties: 
-        id: 
+      properties:
+        id:
           type: integer
-        nome: 
+        nome:
           type: string
-        email: 
+        email:
           type: string
           format: email
 
     CategoriaGet:
-      required: 
+      required:
         - id
       type: object
-      properties: 
-        id: 
+      properties:
+        id:
           type: integer
-        nome: 
+        nome:
           type: string
+
+    SubcategoriaGet:
+      required:
+        - id
+      type: object
+
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        categoria:
+          $ref: "#/components/schemas/CategoriaGet"
 
     ProdutoGet:
       required:
         - id
       type: object
-      properties: 
-        id: 
+      properties:
+        id:
           type: integer
-        nome: 
+        nome:
           type: string
-        descricao: 
+        descricao:
           type: string
-        preco:
-          type: number
         estoque:
           type: integer
         imagem:
           type: string
+        detalhes:
+          type: string
+        subcategoria:
+          $ref: "#/components/schemas/CategoriaGet"
+
         categoria:
-          $ref: '#/components/schemas/CategoriaGet'
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoriaGet"
 
   requestBodies:
     Admin:
-      description: Objeto que deve ser enviado no Body das requisicoes
+      description: Objeto que deve ser enviado no Body das requisições
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Admin'
-    
+            $ref: "#/components/schemas/Admin"
+    Categoria:
+      description: Objeto que deve ser enviado no Body das requisições
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Categoria"
+    Subcategoria:
+      description: Objeto que deve ser enviado no Body das requisições
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Subcategoria"
+    Produto:
+      description: Objeto
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Produto"
+    Login:
+      description: Objeto utilizado paa autenticação do administrador
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Login"
