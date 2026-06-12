@@ -132,6 +132,20 @@ const deleteProdutoByIdCategoria = async function (idCategoria) {
     }
 }
 
+const deleteCategoriaByIdProduto = async function (idProduto) {
+    try {
+        let sql = `delete from tbl_categoria_produto where id_produto = ${idProduto};`
+        let result = await knexConection.raw(sql)
+        if (result) {
+            return true
+        } else {
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     insertCategoriaProduto,
     updateCategoriaProduto,
@@ -141,4 +155,6 @@ module.exports = {
     selectCategoriaByIdProduto,
     deleteCategoriaProduto,
     deleteProdutoByIdCategoria,
+    deleteCategoriaByIdProduto 
+
 }
