@@ -133,5 +133,12 @@ const deleteProdutoByIdCategoria = async function (idCategoria) {
 }
 
 module.exports = {
-    
+    insertCategoriaProduto,
+    updateCategoriaProduto,
+    selectAllCategoriaProduto,
+    selectByIdCategoriaProduto,
+    selectProdutoByIdCategoria,
+    selectCategoriaByIdProduto,
+    deleteCategoriaProduto,
+    deleteProdutoByIdCategoria,
 }
