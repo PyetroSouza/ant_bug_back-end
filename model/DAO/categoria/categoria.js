@@ -15,7 +15,7 @@ const knexConection = knex(knexDataBaseConfig.development)
 const insertCategoria = async function (categoria) {
   try {
     let sql = `insert into tbl_categoria (
-        nome)
+        nome_categoria)
         values(
             '${categoria.nome}'
         )`
@@ -34,7 +34,7 @@ const insertCategoria = async function (categoria) {
 const updateCategoria = async function (categoria) {
   try {
     let sql = `update tbl_categoria set 
-  nome = ${categoria.nome}
+  nome = '${categoria.nome}'
   where id = ${categoria.id}`
     let result = await knexConection.raw(sql)
     if (result) {
@@ -47,7 +47,7 @@ const updateCategoria = async function (categoria) {
 
 const selectAllCategorias = async function () {
   try {
-    let sql = `select * from tbm_categoria order by id desc`
+    let sql = `select * from tbl_categoria order by id desc`
 
     let result = await knexConection.raw(sql)
 
@@ -63,7 +63,7 @@ const selectAllCategorias = async function () {
   }
 }
 
-const selectByIdClassificacao = async function (id) {
+const selectByIdCategoria = async function (id) {
   try {
     let sql = `select * from tbl_categoria where id=${id}`
     let result = await knexConection.raw(sql)
@@ -81,7 +81,7 @@ const selectByIdClassificacao = async function (id) {
 
 const deleteCategoria = async function (id) {
   try {
-    let sql = `delete from tbl_classificacao where id=${id}`
+    let sql = `delete from tbl_categoria where id=${id}`
 
     let result = await knexConection.raw(sql)
     if (result)
@@ -96,6 +96,6 @@ module.exports = {
   insertCategoria,
   updateCategoria,
   selectAllCategorias,
-  selectByIdClassificacao,
+  selectByIdCategoria,
   deleteCategoria
 }

@@ -18,6 +18,7 @@ router.post('/', bodyParserJSON, async function (request, response) {
     let result = await controllerSubcategoria.inserirNovaSubcategoria(dados, contentType)
 
     response.status(result.status_code)
+    response.json(result)
 })
 
 router.get('/', async function (request, response) {
