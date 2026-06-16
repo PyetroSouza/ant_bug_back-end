@@ -7,12 +7,11 @@
  *************************************************************************/
 
 
-const configMessage = require("../modulo/configMessage")
+const configMessage = require("../modulo/configMessage.js")
 
 const subcategoriaDAO = require('../../model/DAO/subcategoria/subcategoria.js')
 
 const controllerCategoria = require('../categoria/controller_categoria.js')
-const res = require("express/lib/response.js")
 
 const inserirNovaSubcategoria = async function (subcategoria, contentType) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
@@ -45,8 +44,7 @@ const inserirNovaSubcategoria = async function (subcategoria, contentType) {
     }
 }
 
-
-const updateSubtegoria = async function (subcategoria, id, contentType) {
+const updateSubcategoria = async function (subcategoria, id, contentType) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
 
     try {
@@ -87,7 +85,7 @@ const listarSubcategoria = async function () {
     try {
         let result = await subcategoriaDAO.selectAllSubcategoria()
         if (result) {
-            if (result.lenght > 0) {
+            if (result.length > 0) {
                 for (let subcategoria of result) {
                     let resultCategoria = await controllerCategoria.buscarCategoria(subcategoria.id_categoria)
                     if (resultCategoria.status) {
@@ -113,7 +111,7 @@ const listarSubcategoria = async function () {
     }
 }
 
-const buscarSubcategoria = async function () {
+const buscarSubcategoria = async function (id) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
 
     try {
@@ -130,7 +128,7 @@ const buscarSubcategoria = async function () {
                     for (let subcategoria of result) {
                         let resultCategoria = await controllerCategoria.buscarCategoria(subcategoria.id_categoria)
                         if (resultCategoria.status) {
-                            subcategoria.id_categoria = resultCategoria.response.categoria
+                            subcategoria.categoria = resultCategoria.response.categoria
                             delete subcategoria.id_categoria
                         }
                     }
@@ -179,11 +177,21 @@ const deleteSubCategoria = async function (id) {
 
 const validarDados = async function (subcategoria) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
-    if (subcategoria.nome == undefined || subcategoria.nome == "" || subcategoria.nome == null || subcategoria.nome.lenght > 100 || subcategoria.nome.lenght < 3) {
-        customMessage.ERROR_BAD_REQUESET.field = "[NOME] INVÁLIDO"
+    if (subcategoria.nome == undefined || subcategoria.nome == "" || subcategoria.nome == null || subcategoria.nome.length > 100 || subcategoria.nome.length < 3) {
+        customMessage.ERROR_BAD_REQUEST.field = "[NOME] INVÁLIDO"
     } else if (subcategoria.id_categoria == undefined || subcategoria.id_categoria == "" || subcategoria.id_categoria == null || isNaN(subcategoria.id_categoria) || subcategoria.id_categoria <= 0) {
-        customMessage.ERROR_BAD_REQUESET.field = "[ID CATEGORIA] INVÁLIDO"
+        customMessage.ERROR_BAD_REQUEST.field = "[ID CATEGORIA] INVÁLIDO"
     } else {
         return false
     }
-} 
+    return customMessages.ERROR_BAD_REQUEST
+}
+
+
+module.exports = {
+    inserirNovaSubcategoria,
+    updateSubcategoria,
+    listarSubcategoria,
+    buscarSubcategoria,
+    deleteSubCategoria
+}

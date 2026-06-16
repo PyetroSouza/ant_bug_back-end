@@ -156,7 +156,7 @@ const atualizarProduto = async function (produto, id, contentType) {
 
     try {
         //validação do contenty type para receber apenas JSON
-        if (String(contentType).toUpperCase() == 'APLICATION/JSON') {
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
             //validação para o ID incorreto
             let resultBuscarID = await buscarProduto(id)
 

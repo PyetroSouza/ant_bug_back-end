@@ -97,9 +97,9 @@ const deleteAdministrador = async function (id) {
 const selectLoginAdministrador = async function (email, senha) {
     try {
         let sql = `select * from tbl_administrador 
-    where email = ${email} and where senha = ${senha}`
+    where email = '${email}'`
         let result = await knexConection.raw(sql)
-        if (Array.isArray(result) && result[0].lenght > 0) {
+        if (Array.isArray(result) && result[0].length > 0) {
             return result[0]
         } else {
             return false

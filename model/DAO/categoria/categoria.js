@@ -23,7 +23,7 @@ const insertCategoria = async function (categoria) {
     let result = await knexConection.raw(sql)
 
     if (result)
-      return result[0].insertId 
+      return result[0].insertId
     else
       return false
   } catch (error) {
@@ -85,16 +85,16 @@ const deleteCategoria = async function (id) {
 
     let result = await knexConection.raw(sql)
     if (result)
-        return true
+      return true
     else return false
-  }catch (error){
+  } catch (error) {
     return false
   }
 }
 
 module.exports = {
   insertCategoria,
-  updateAdministrador,
+  updateCategoria,
   selectAllCategorias,
   selectByIdClassificacao,
   deleteCategoria
