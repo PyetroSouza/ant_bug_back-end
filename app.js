@@ -11,3 +11,17 @@ const corsOptions = {
 }
 
 app.use(cors(corsOptions))
+
+const adminRouter = require('./routers/administrador.router')
+app.use("/v1/planetaverde/admin/administrador", cors(), adminRouter)
+
+const produtoRouter = require('./routers/produto.router')
+app.use('/v1/planetaverde/admin/produto', cors(), produtoRouter)
+
+const categoriaRouter = require('./routers/categoria.router')
+app.use('/v1/planetaverde/admin/categoria', cors(), categoriaRouter)
+
+
+app.listen(8080, function () {
+    console.log('API aguardando novas requisições...')
+})
