@@ -15,7 +15,7 @@ const inserirNovoProduto = async function (produto, contentType) {
     let message = JSON.parse(JSON.stringify(configMessage))
     try {
 
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
             let validar = await validarDados(produto)
 
             if (validar) {
@@ -48,7 +48,7 @@ const atualizarProduto = async function (produto, id, contentType) {
     let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+        if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
             let resultBuscarID = await buscarProduto(id)
 
 

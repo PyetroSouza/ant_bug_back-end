@@ -12,7 +12,10 @@ const controllerProduto = require('../controller/produto/controller_produto')
 const bodyParser = require('body-parser')
 const bodyParserJSON = bodyParser.json()
 
-router.post('/', bodyParserJSON, async function (request, response) {
+const multer = require('multer')
+const upload = multer()
+
+router.post('/', upload.none(), bodyParserJSON, async function (request, response) {
     let dados = request.body
     let contentType = request.headers['content-type']
     let result = await controllerProduto.inserirNovoProduto(dados, contentType)
@@ -36,7 +39,7 @@ router.get('/:id', async function (request, response) {
     response.json(result)
 })
 
-router.put('/:id', bodyParserJSON, async function (request, response) {
+router.put('/:id',upload.none(), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
     let id = request.params.id
     let dados = request.body
