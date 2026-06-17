@@ -67,7 +67,7 @@ const selectAllCategoriaProduto = async function () {
 
 const selectByIdCategoriaProduto = async function (id) {
     try {
-        let sql = `select * from tbl_categoria_produto where = ${id}`
+        let sql = `select * from tbl_categoria_produto where id = ${id}`
         let result = await knexConection.raw(sql)
         if (Array.isArray(result)) {
             return result[0]
@@ -83,11 +83,11 @@ const selectProdutoByIdCategoria = async function (idCategoria) {
     try {
         let sql = `select tbl_produto.* 
                     from tbl_categoria
-                        inner join tbl_produto_categoria
-                            on tbl_categoria.id = tbl_produto_categoria.id_categoria
+                        inner join tbl_categoria_produto
+                            on tbl_categoria.id = tbl_categoria_produto.id_categoria
                         inner join tbl_produto
-                            on tbl_produto.id = tbl_produto_categoria.id_categoria
-                    where tbl_cateogia.id = ${idCategoria}`
+                            on tbl_produto.id = tbl_categoria_produto.id_produto
+                    where tbl_categoria.id = ${idCategoria}`
         let result = await knexConection.raw(sql)
         if (Array.isArray(result)) {
             return result[0]
@@ -95,6 +95,7 @@ const selectProdutoByIdCategoria = async function (idCategoria) {
             return false
         }
     } catch (error) {
+        console.log('ERRO selectProdutoByIdCategoria:', error.message)
         return false
     }
 }
@@ -103,11 +104,11 @@ const selectCategoriaByIdProduto = async function (idProduto) {
     try {
         let sql = `select tbl_categoria.* 
                     from tbl_produto
-                        inner join tbl_produto_categoria
-                            on tbl_categoria.id = tbl_produto_categoria.id_categoria
-                        inner join tbl_produto
-                            on tbl_produto.id = tbl_produto_categoria.id_categoria
-                    where tbl_cateogia.id = ${idProduto}`
+                        inner join tbl_categoria_produto
+                            on tbl_produto.id = tbl_categoria_produto.id_produto
+                        inner join tbl_categoria
+                            on tbl_categoria.id = tbl_categoria_produto.id_categoria
+                    where tbl_produto.id = ${idProduto}`
         let result = await knexConection.raw(sql)
         if (Array.isArray(result)) {
             return result[0]
@@ -115,6 +116,7 @@ const selectCategoriaByIdProduto = async function (idProduto) {
             return false
         }
     } catch (error) {
+        console.log('ERRO selectCategoriaByIdProduto:', error.message)
         return false
     }
 }

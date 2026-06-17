@@ -53,7 +53,7 @@ const atualizarCategoriaProduto = async function (categoriaProduto, id) {
             if (!validar) {
                 categoriaProduto.id = Number(id)
 
-                let result = await CategoriaProdutoDAO.updateCategoriaProduto((categoriaProduto))
+                let result = await categoriaProdutoDAO.updateCategoriaProduto((categoriaProduto))
 
                 if (result) {
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_UPDATE_ITEM.status
@@ -176,7 +176,7 @@ const buscarCategoriasIdProduto = async function (idProduto) {
 
             return customMessage.ERROR_BAD_REQUEST
         } else {
-            let result = await categoriaProdutoDAO(idProduto)
+            let result = await categoriaProdutoDAO.selectCategoriaByIdProduto(idProduto)
             if (result) {
                 if (result.length > 0) {
                     customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_RESPONSE.status
@@ -200,10 +200,10 @@ const buscarCategoriasIdProduto = async function (idProduto) {
 const excluirCategoriaProduto = async function (id) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
     try {
-        let buscarCategoriaProdutoResult = await buscarCategoriaproduto(id)
+        let buscarCategoriaProdutoResult = await buscarCategoriaProduto(id)
 
         if (buscarCategoriaProdutoResult.status) {
-            let result = await CategoriaProdutoDAO.deleteCategoriaProduto(id)
+            let result = await categoriaProdutoDAO.deleteCategoriaProduto(id)
 
             if (result) {
                 customMessage.DEFAULT_MESSAGE.status = customMessage.SUCCESS_DELETED_ITEM.status
@@ -250,7 +250,7 @@ const validarDados = async function (categoriaProduto) {
     } else {
         return false
     }
-    return customMessages.ERROR_BAD_REQUEST
+    return customMessage.ERROR_BAD_REQUEST
 }
 
 

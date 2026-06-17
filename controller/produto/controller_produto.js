@@ -6,14 +6,14 @@
 * Versão : 1.0
  */
 
-const configmessage = require('../modulo/configMessage.js')
+const configMessage = require('../modulo/configMessage.js')
 
 const produtoDAO = require('../../model/DAO/produto/produto.js')
 
 const inserirNovoProduto = async function (produto, contentType) {
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a original
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
     try {
 
         //validação para o tipo de dados da requisição (somente JSON)
@@ -31,12 +31,9 @@ const inserirNovoProduto = async function (produto, contentType) {
                     //Criando o atributo ID no JSON do produto e colocando o ID gerado após o insert
                     produto.id = result
 
-                    message.DEFAULT_MESSAGE.status =
-                        message.SUCCESS_CREATED_ITEM.status
-                    message.DEFAULT_MESSAGE.status_code =
-                        message.SUCCESS_CREATED_ITEM.status_code
-                    message.DEFAULT_MESSAGE.message =
-                        message.SUCCESS_CREATED_ITEM.message
+                    message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
+                    message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
+                    message.DEFAULT_MESSAGE.message = message.SUCCESS_CREATED_ITEM.message
                     message.DEFAULT_MESSAGE.response = produto
 
                     return message.DEFAULT_MESSAGE
@@ -45,7 +42,6 @@ const inserirNovoProduto = async function (produto, contentType) {
                 }
 
             }
-
         } else {
             return message.ERROR_CONTENT_TYPE //415
         }
@@ -53,13 +49,65 @@ const inserirNovoProduto = async function (produto, contentType) {
         console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (controller)
     }
+}
 
+//Função para atualizar um produto
+const atualizarProduto = async function (produto, id, contentType) {
+    let message = JSON.parse(JSON.stringify(configMessage))
+
+    try {
+        //validação do contenty type para receber apenas JSON
+        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
+            //validação para o ID incorreto
+            let resultBuscarID = await buscarProduto(id)
+
+            //se a função encontrar o produto o atributo do json será verdadeiro
+            //isso significa que o produto existe na base, caso não retorne true,
+            //o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
+            if (resultBuscarID.status) {
+                let validar = await validarDados(produto)
+
+                //validação de campos obrigatórios para a atualização (body)
+                if (!validar) {
+                    //Adiciono o atributo ID do produto no JSON para ser enviado ao DAO
+                    produto.id = id
+
+                    //chama a função do DAO para atualizar o produto ( dados e ID)
+                    let result = await produtoDAO.updateProduto(produto)
+
+                    if (result) {
+                        message.DEFAULT_MESSAGE.status =
+                            message.SUCCESS_UPDATE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code =
+                            message.SUCCESS_UPDATE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message =
+                            message.SUCCESS_UPDATE_ITEM.message
+                        message.DEFAULT_MESSAGE.response = produto
+
+                        return message.DEFAULT_MESSAGE //200 (atualizado)
+                    } else {
+                        return message.ERROR_INTERNAL_SERVER_MODEL //500
+
+                    }
+                } else {
+                    return validar //400
+                }
+            } else {
+                return resultBuscarID //400, 404 ou 500
+            }
+
+        } else {
+            return message.ERROR_CONTENT_TYPE //415
+        }
+    } catch (error) {
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 ( controller)
+    }
 }
 
 //Função para retornar todos os produtos
 const listarProduto = async function () {
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a estrutura original
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //Chama a função do DAO para retornar a lista de todos os produtos
@@ -91,7 +139,7 @@ const listarProduto = async function () {
 const buscarProduto = async function (id) {
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a original
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //Validação para garantir que o ID seja válido
@@ -125,7 +173,7 @@ const buscarProduto = async function (id) {
 
 //Função para excluir um produto
 const excluirProduto = async function (id) {
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //Validação do erro 400 e 404
@@ -137,7 +185,7 @@ const excluirProduto = async function (id) {
             let result = await produtoDAO.deleteProduto(id)
 
             if (result) {
-                return message.SUCESS_DELETED_ITEM //200 (registro excluído)
+                return message.SUCCESS_DELETED_ITEM //200 (registro excluído)
             } else {
                 return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
             }
@@ -150,64 +198,12 @@ const excluirProduto = async function (id) {
 
 }
 
-//Função para atualizar um produto
-const atualizarProduto = async function (produto, id, contentType) {
-    let message = JSON.parse(JSON.stringify(configmessage))
-
-    try {
-        //validação do contenty type para receber apenas JSON
-        if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
-            //validação para o ID incorreto
-            let resultBuscarID = await buscarProduto(id)
-
-            //se a função encontrar o produto o atributo do json será verdadeiro
-            //isso significa que o produto existe na base, caso não retorne true,
-            //o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
-            if (resultBuscarID.status) {
-                let validar = await validarDados(produto)
-
-                //validação de campos obrigatórios para a atualização (body)
-                if (!validar) {
-                    //Adiciono o atributo ID do produto no JSON para ser enviado ao DAO
-                    produto.id = id
-
-                    //chama a função do DAO para atualizar o produto ( dados e ID)
-                    let result = await produtoDAO.updateProduto(produto)
-
-                    if (result) {
-                        message.DEFAULT_MESSAGE.status =
-                            message.SUCCESS_UPDATED_ITEM.status
-                        message.DEFAULT_MESSAGE.status_code =
-                            message.SUCCESS_UPDATED_ITEM.status_code
-                        message.DEFAULT_MESSAGE.message =
-                            message.SUCCESS_UPDATED_ITEM.message
-                        message.DEFAULT_MESSAGE.response = produto
-
-                        return message.DEFAULT_MESSAGE //200 (atualizado)
-                    } else {
-                        return message.ERROR_INTERNAL_SERVER_MODEL //500
-
-                    }
-                } else {
-                    return validar //400
-                }
-            } else {
-                return resultBuscarID //400, 404 ou 500
-            }
-
-        } else {
-            return message.ERROR_CONTENT_TYPE //415
-        }
-    } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 ( controller)
-    }
-}
 
 //função para validar todos os dados de produto
 //(obrigatório, qntde de caracteres, etc)
 const validarDados = async function (produto) {
     //Cria um clone da const de mensagens
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     if (produto.nome == undefined || produto.nome == '' || produto.nome == null || produto.nome.length > 80) {
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'

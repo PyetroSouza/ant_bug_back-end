@@ -7,16 +7,19 @@
  */
 
 //Import do arquivo de padronizacao de mensagens
-const config_message = require('../modulo/configMessage.js')
+const configMessage = require('../modulo/configMessage.js')
 
 //Import do arquivo DAO para fazer o CRUDO do categoria no banco de dados
 const categoriaDAO = require('../../model/DAO/categoria/categoria.js')
+
+const controllerProduto = require('../produto/controller_produto.js')
+const controllerCategoriaProduto = require('./controller_categoria_produto.js')
 
 //funcao para inserir uma nova categoria
 const inserirNovaCategoria = async function (categoria, contentType) {
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a original
-    let message = JSON.parse(JSON.stringify(config_message))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //validação para o tipo de dados da requisição (somente JSON)
@@ -30,11 +33,22 @@ const inserirNovaCategoria = async function (categoria, contentType) {
             } else {
                 //Encaminha os dados da categoria para o DAO
                 let result = await categoriaDAO.insertCategoria(categoria)
-                console.log(result)
+
 
                 if (result) { //201
                     //Criando o atributo ID no JSON do categoria e colocando o ID gerado após o insert
                     categoria.id = result
+
+                    for (let produto of categoria.produto) {
+                        let categoriaProduto = {
+                            "id_categoria": categoria.id,
+                            "id_produto": produto.id
+                        }
+                        let resultCategoriaProduto = await controllerCategoriaProduto.inserirNovoCategoriaProduto(categoriaProduto)
+                        if (!resultCategoriaProduto.status) {
+                            return message.SUCCESS_CREATED_ITEM_WARNING
+                        }
+                    }
 
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_CREATED_ITEM.status_code
@@ -51,69 +65,86 @@ const inserirNovaCategoria = async function (categoria, contentType) {
         }
     } catch (error) {
         return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (controller)
+
     }
 }
 
 //Função para atualizar uma categoria
 const atualizarCategoria = async function (categoria, id, contentType) {
-    let message = JSON.parse(JSON.stringify(config_message))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
-        //Validação do Contenty type para receber apenas JSON
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
-            //Validação para o ID incorreto
             let resultBuscarID = await buscarCategoria(id)
 
-            //Se a função buscar encontrar o categoria o atributo status do JSON será verdadeiro
-            //Isso significa que o categoria existe na base, caso não retorne true, então o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
             if (resultBuscarID.status) {
                 let validar = await validarDados(categoria)
 
-                //Validação de campos obrigatórios para a atualização (Body)
                 if (!validar) {
-                    //Adiciono o atributo ID do genero no JSON para ser enviado ao DAO
-                    categoria.id = categoria
+                    categoria.id = Number(id)
 
-                    //Chama a função do DAO para atualizar o categoria (dados e o ID)
                     let result = await categoriaDAO.updateCategoria(categoria)
 
                     if (result) {
-                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATED_ITEM.status
-                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATED_ITEM.status_code
-                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATED_ITEM.message
+                        // Se vier produtos no body, atualiza os vínculos
+                        if (categoria.produto && categoria.produto.length > 0) {
+                            // Deleta os vínculos antigos da categoria
+                            await controllerCategoriaProduto.excluirProdutoIdCategoria(categoria.id)
+
+                            // Insere os novos vínculos
+                            for (let produto of categoria.produto) {
+                                let categoriaProduto = {
+                                    id_categoria: categoria.id,
+                                    id_produto: produto.id
+                                }
+                                let resultCategoriaProduto = await controllerCategoriaProduto.inserirNovoCategoriaProduto(categoriaProduto)
+                                if (!resultCategoriaProduto.status) {
+                                    return message.SUCCESS_CREATED_ITEM_WARNING
+                                }
+                            }
+                        }
+
+                        message.DEFAULT_MESSAGE.status = message.SUCCESS_UPDATE_ITEM.status
+                        message.DEFAULT_MESSAGE.status_code = message.SUCCESS_UPDATE_ITEM.status_code
+                        message.DEFAULT_MESSAGE.message = message.SUCCESS_UPDATE_ITEM.message
                         message.DEFAULT_MESSAGE.response = categoria
 
-                        return message.DEFAULT_MESSAGE //200 (Atualizado)
+                        return message.DEFAULT_MESSAGE // 200
                     } else {
-                        return message.ERROR_INTERNAL_SERVER_MODEL //500
+                        return message.ERROR_INTERNAL_SERVER_MODEL // 500
                     }
                 } else {
-                    return validar
+                    return validar // 400
                 }
             } else {
-                return resultBuscarID //400, 404 ou 500 
+                return resultBuscarID // 400, 404 ou 500
             }
-
         } else {
-            return message.ERROR_CONTENT_TYPE //415
+            return message.ERROR_CONTENT_TYPE // 415
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
+        console.log(error)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
     }
 }
 
 //Função para retornar todos as categorias
 const listarCategoria = async function () {
-
-    //Criando um clone do objeto JSON para manipular a sua estrutura local sem
-    //modificar a estrutura original
-    let message = JSON.parse(JSON.stringify(config_message))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         let result = await categoriaDAO.selectAllCategorias()
 
         if (result) {
             if (result.length > 0) {
+
+                for (let categoria of result) {
+                    let resultProduto = await controllerCategoriaProduto.buscarProdutoIdCategoria(categoria.id)
+                    if (resultProduto.status) {
+                        categoria.produtos = resultProduto.response.categoria_produto
+                    }
+                }
+
                 message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                 message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                 message.DEFAULT_MESSAGE.response.count = result.length
@@ -124,19 +155,18 @@ const listarCategoria = async function () {
                 return message.ERROR_NOT_FOUND //404
             }
         } else {
-            return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
+            return message.ERROR_INTERNAL_SERVER_MODEL //500
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 ( controller)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500
     }
 }
-
 
 //Função para buscar um genero pelo ID
 const buscarCategoria = async function (id) {
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem
     //modificar a estrutura original
-    let message = JSON.parse(JSON.stringify(config_message))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //Validaçção para garantir que o ID seja válido
@@ -148,6 +178,14 @@ const buscarCategoria = async function (id) {
 
             if (result) {
                 if (result.length > 0) {
+
+                    for (let categoria of result) {
+                        let resultProduto = await controllerCategoriaProduto.buscarProdutoIdCategoria(categoria.id)
+                        if (resultProduto.status) {
+                            categoria.produtos = resultProduto.response.categoria_produto
+                        }
+                    }
+
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_RESPONSE.status
                     message.DEFAULT_MESSAGE.status_code = message.SUCCESS_RESPONSE.status_code
                     message.DEFAULT_MESSAGE.response.categoria = result
@@ -168,7 +206,7 @@ const buscarCategoria = async function (id) {
 
 //Função para excluir uma categoria
 const excluirCategoria = async function (id) {
-    let message = JSON.parse(JSON.stringify(config_message))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //Validação do erro 400 e 404
@@ -194,7 +232,7 @@ const excluirCategoria = async function (id) {
 
 //Função para validar todos os dados de categoria
 const validarDados = async function (categoria) {
-    let message = JSON.parse(JSON.stringify(config_message))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     if (categoria.nome == undefined || categoria.nome == '' || categoria.nome == null ||
         categoria.nome.length > 80) {

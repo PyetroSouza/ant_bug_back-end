@@ -18,12 +18,12 @@ const insertSubcategoria = async function (subcategoria) {
         nome,
         id_categoria
     ) values (
-     replace("${subcategoria.nome}),
+     replace("${subcategoria.nome}", "'", ""),
      ${subcategoria.id_categoria}
         );`
         let result = await knexConection.raw(sql)
         if (result) {
-            return true
+            return result[0].insertId
         } else {
             return false
         }
@@ -68,7 +68,7 @@ const selectByIdSubcategoria = async function (id) {
         let sql = `select * from tbl_subcategoria where id = ${id}`
         let result = await knexConection.raw(sql)
         if (result) {
-            return true
+            return result[0]
         } else {
             return false
         }

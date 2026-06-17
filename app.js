@@ -21,6 +21,9 @@ app.use('/v1/planetaverde/admin/produto', cors(), produtoRouter)
 const categoriaRouter = require('./routers/categoria.router')
 app.use('/v1/planetaverde/admin/categoria', cors(), categoriaRouter)
 
+const subcategoriaRouter = require('./routers/subcategoria.router')
+app.use('/v1/planetaverde/admin/subcategoria', cors(), subcategoriaRouter)
+
 
 app.listen(8080, function () {
     console.log('API aguardando novas requisições...')

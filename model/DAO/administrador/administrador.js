@@ -45,7 +45,9 @@ const updateAdministrador = async function (administrador) {
 
         let result = await knexConection.raw(sql)
         if (result) {
-            return result[0].insertId
+            return true
+        } else {
+            return false
         }
     } catch (error) {
 
@@ -94,7 +96,7 @@ const deleteAdministrador = async function (id) {
     }
 }
 
-const selectLoginAdministrador = async function (email, senha) {
+const selectLoginAdministrador = async function (email) {
     try {
         let sql = `select * from tbl_administrador 
     where email = '${email}'`

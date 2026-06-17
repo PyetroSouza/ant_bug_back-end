@@ -22,8 +22,8 @@ const insertProduto = async function (produto) {
         ) values (
         replace("${produto.nome}", "'",""),
         replace("${produto.descricao}", "'", ""),
-        replace("${produto.detalhes}"),
-        replace("${produto.imagem}")
+        replace("${produto.detalhes}", "'", ""),
+        replace("${produto.imagem}", "'", "")
         );`
         let result = await knexConection.raw(sql)
         if (result) {
@@ -39,14 +39,17 @@ const insertProduto = async function (produto) {
 const updateProduto = async function (produto) {
     try {
         let sql = `update tbl_produto set
-    nome    = '${produto.nome}'   
+    nome    = '${produto.nome}',
+    descricao = '${produto.descricao}',
+    detalhes = '${produto.detalhes}',
+    imagem = '${produto.imagem}' 
      where id = ${produto.id}`
 
         let result = await knexConection.raw(sql)
         if (result) {
             return true
         } else {
-            return flase
+            return false
         }
     } catch (error) {
         return false

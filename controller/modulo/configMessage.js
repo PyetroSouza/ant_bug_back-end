@@ -7,7 +7,7 @@
 
 const { response } = require("express");
 
-const DEFAUT_MESSAGE = {
+const DEFAULT_MESSAGE = {
     api_description: "API para controlar projeto Planeta Verde",
     development: "Pyetro Ferreira",
     version: "1.0.6.26",
@@ -46,6 +46,12 @@ const ERROR_INTERNAL_SERVER_CONTROLLER = {
     message: "Não foi possível processar a requisição devido ao um erro interno no servidor [CONTROLLER]"
 }
 
+const ERROR_UNAUTHORIZED = {
+    status: false,
+    status_code: 401,
+    message: 'Não autorizado'
+}
+
 const SUCCESS_RESPONSE = {
     status: true,
     status_code: 200
@@ -76,11 +82,13 @@ const SUCCESS_CREATED_ITEM_WARNING = {
 }
 
 module.exports = {
-    DEFAUT_MESSAGE,
+    DEFAULT_MESSAGE,
     ERROR_BAD_REQUEST,
     ERROR_NOT_FOUND,
     ERROR_CONTENT_TYPE,
     ERROR_INTERNAL_SERVER_CONTROLLER,
+    ERROR_INTERNAL_SERVER_MODEL,
+    ERROR_UNAUTHORIZED,
     SUCCESS_RESPONSE,
     SUCCESS_CREATED_ITEM,
     SUCCESS_UPDATE_ITEM,

@@ -6,7 +6,7 @@
 * Versão : 1.0
  */
 
-const configmessage = require('../modulo/configMessage.js')
+const configMessage = require('../modulo/configMessage.js')
 const administradorDAO = require('../../model/DAO/administrador/administrador.js')
 
 const jwt = require('jsonwebtoken')
@@ -17,7 +17,7 @@ const SALT_ROUNDS = 10
 
 const inserirNovoAdministrador = async function (administrador, contentType) {
 
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
     try {
 
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
@@ -61,7 +61,7 @@ const inserirNovoAdministrador = async function (administrador, contentType) {
 }
 
 const atualizarAdministrador = async function (administrador, id, contentType) {
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //validação do contenty type para receber apenas JSON
@@ -78,18 +78,18 @@ const atualizarAdministrador = async function (administrador, id, contentType) {
                 //validação de campos obrigatórios para a atualização (body)
                 if (!validar) {
                     //Adiciono o atributo ID do produto no JSON para ser enviado ao DAO
-                    administrador.id = id
+                    administrador.id = Number(id)
 
                     //chama a função do DAO para atualizar o produto ( dados e ID)
                     let result = await administradorDAO.updateAdministrador(administrador)
 
                     if (result) {
                         message.DEFAULT_MESSAGE.status =
-                            message.SUCCESS_UPDATED_ITEM.status
+                            message.SUCCESS_UPDATE_ITEM.status
                         message.DEFAULT_MESSAGE.status_code =
-                            message.SUCCESS_UPDATED_ITEM.status_code
+                            message.SUCCESS_UPDATE_ITEM.status_code
                         message.DEFAULT_MESSAGE.message =
-                            message.SUCCESS_UPDATED_ITEM.message
+                            message.SUCCESS_UPDATE_ITEM.message
                         message.DEFAULT_MESSAGE.response = administrador
 
                         return message.DEFAULT_MESSAGE //200 (atualizado)
@@ -113,7 +113,7 @@ const atualizarAdministrador = async function (administrador, id, contentType) {
 }
 
 const listarAdministrador = async function () {
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         let result = await administradorDAO.selectAllAdministrador()
@@ -142,11 +142,11 @@ const listarAdministrador = async function () {
 const buscarAdministrador = async function (id) {
 
     //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a original
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //Validação para garantir que o ID seja válido
-        if (id == undefined || id == '' || id == null || isNaN(id)) {
+        if (id == undefined || id == '' || id == null || isNaN(id) || id <= 0) {
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
             return message.ERROR_BAD_REQUEST //400
         } else {
@@ -176,7 +176,7 @@ const buscarAdministrador = async function (id) {
 
 //Função para excluir um produto
 const excluirAdministrador = async function (id) {
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         //Validação do erro 400 e 404
@@ -188,7 +188,7 @@ const excluirAdministrador = async function (id) {
             let result = await administradorDAO.deleteAdministrador(id)
 
             if (result) {
-                return message.SUCESS_DELETED_ITEM //200 (registro excluído)
+                return message.SUCCESS_DELETED_ITEM //200 (registro excluído)
             } else {
                 return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
             }
@@ -203,7 +203,7 @@ const excluirAdministrador = async function (id) {
 
 
 const logarAdministrador = async function (administrador, contentType) {
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
@@ -284,7 +284,7 @@ const verificarToken = function (req, res, next) {
 
 
 const validarDados = async function (administrador) {
-    let message = JSON.parse(JSON.stringify(configmessage))
+    let message = JSON.parse(JSON.stringify(configMessage))
 
     if (
         administrador.nome == undefined || administrador.nome == '' || administrador.nome == null || administrador.nome.length < 3 || administrador.nome.length > 100

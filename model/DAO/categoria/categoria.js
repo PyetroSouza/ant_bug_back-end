@@ -15,7 +15,7 @@ const knexConection = knex(knexDataBaseConfig.development)
 const insertCategoria = async function (categoria) {
   try {
     let sql = `insert into tbl_categoria (
-        nome_categoria)
+        nome)
         values(
             '${categoria.nome}'
         )`
@@ -36,9 +36,13 @@ const updateCategoria = async function (categoria) {
     let sql = `update tbl_categoria set 
   nome = '${categoria.nome}'
   where id = ${categoria.id}`
+
     let result = await knexConection.raw(sql)
+
     if (result) {
-      return result[0].insertId
+      return true
+    } else {
+      return false
     }
   } catch (error) {
     return false

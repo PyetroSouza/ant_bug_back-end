@@ -44,7 +44,7 @@ const inserirNovaSubcategoria = async function (subcategoria, contentType) {
     }
 }
 
-const updateSubcategoria = async function (subcategoria, id, contentType) {
+const atualizarSubcategoria = async function (subcategoria, id, contentType) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
 
     try {
@@ -149,7 +149,7 @@ const buscarSubcategoria = async function (id) {
     }
 }
 
-const deleteSubCategoria = async function (id) {
+const excluirSubcategoria = async function (id) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
     try {
         let buscarSubcategoriaResult = await buscarSubcategoria(id)
@@ -190,8 +190,8 @@ const validarDados = async function (subcategoria) {
 
 module.exports = {
     inserirNovaSubcategoria,
-    updateSubcategoria,
+    atualizarSubcategoria,
     listarSubcategoria,
     buscarSubcategoria,
-    deleteSubCategoria
+    excluirSubcategoria
 }
