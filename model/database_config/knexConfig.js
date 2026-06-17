@@ -4,7 +4,7 @@ module.exports = {
         connection: {
             host: 'localhost',
             user: 'root',
-            password: 'pyetro1267',
+            password: '12345678',
             database: 'loja_vegana',
             port: 3306,
 

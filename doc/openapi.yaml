@@ -30,7 +30,7 @@ tags:
 
 
 paths:
-  /v1/admin:
+  /v1/planetaverde/admin/administrador:
     post:
       tags:
         - Admin
@@ -68,7 +68,7 @@ paths:
                   $ref: "#/components/schemas/AdminGet"
         "404":
           description: administrador não encontrado
-  /v1/admin/{id}:
+  /v1/planetaverde/admin/administrador/{id}:
     get:
       tags:
         - Admin
@@ -149,7 +149,7 @@ paths:
           description: Administrador não encontrado
         "505": 
           description: Erro interno no servidor
-  /v1/admin/login:
+  /v1/planetaverde/admin/administrador/login:
     post:
       tags:
         - Admin
@@ -171,7 +171,7 @@ paths:
           description: Email ou senha incorretos
         "500":
           description: Erro interno do servidor
-  /v1/categoria:
+  /v1/planetaverde/admin/categoria:
     post:
       tags:
         - Categoria
@@ -211,7 +211,7 @@ paths:
           description: Nenhum categoria encontrada
         "505":
           description: Erro interno do servidor
-  /v1/categoria/{id}:
+  /v1/planetaverde/admin/categoria/{id}:
     get:
       tags:
         - Categoria
@@ -291,7 +291,7 @@ paths:
           description: Categoria não encontrada
         "500":
           description: Erro interno do servidor
-  /v1/subcategoria:
+  /v1/planetaverde/admin/subcategoria:
     post:
       tags:
         - Subcategoria
@@ -331,7 +331,7 @@ paths:
           description: Nehnhuma subcategoria encontrada
         "500":
           description: Erro Interno do servidor
-  /v1/subcategoria/{id}:
+  /v1/planetaverde/admin/subcategoria/{id}:
     get:
       tags:
         - Subcategoria
@@ -412,7 +412,7 @@ paths:
         "500":
           description: Erro interno do servidor
 
-  /v1/produto:
+  /v1/planetaverde/admin/produto:
     post:
       tags:
         - Produto
@@ -452,7 +452,7 @@ paths:
           description: Nenhum produto encontrado
         "505":
           description: Erro interno do servidor
-  /v1/produto/{id}:
+  /v1/planetaverde/admin/produto/{id}:
     get:
       tags:
         - Produto

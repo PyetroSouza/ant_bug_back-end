@@ -1,6 +1,6 @@
 /***************************************************************************************************************
- * Objetivo: Arquivo responsável pela validação, tratamento, manipulação de dados para realizar o CRUD de Filme Gênero
- * Data: 22/05/2026
+ * Objetivo: Arquivo responsável pela validação, tratamento, manipulação de dados para realizar o CRUD de Produto
+ * Data: 15/06/2026
  * Autor: Pyetro Ferreira
  * Versão: 1.0
  ***************************************************************************************************************/
@@ -61,7 +61,7 @@ const atualizarCategoriaProduto = async function (categoriaProduto, id) {
                     customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_UPDATE_ITEM.message
                     customMessage.DEFAULT_MESSAGE.response = categoriaProduto
 
-                    return customMessage.DEFAULT_MESSAGE //200
+                    return customMessage.DEFAULT_MESSAGE 
                 } else {
                     return customMessage.ERROR_INTERNAL_SERVER_MODEL
                 }
@@ -75,7 +75,7 @@ const atualizarCategoriaProduto = async function (categoriaProduto, id) {
         return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
-//Função para lista CategoriaProduto
+
 const listarCategoriaProduto = async function () {
 
     let customMessage = JSON.parse(JSON.stringify(configMessage))

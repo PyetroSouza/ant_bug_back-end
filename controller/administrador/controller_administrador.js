@@ -1,10 +1,10 @@
-/*
+/**************************************************************************
 * Objetivo : Arquivo responsável pela validação, tratamento e manipulação
-* de dados para o CRUD de produto
+* de dados para o CRUD de Administrador
 * Data: 15/06/2026
 * Autor : Pyetro Ferreira
 * Versão : 1.0
- */
+ **************************************************************************/
 
 const configMessage = require('../modulo/configMessage.js')
 const administradorDAO = require('../../model/DAO/administrador/administrador.js')
@@ -64,23 +64,16 @@ const atualizarAdministrador = async function (administrador, id, contentType) {
     let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
-        //validação do contenty type para receber apenas JSON
         if (String(contentType).toUpperCase() == 'APPLICATION/JSON') {
-            //validação para o ID incorreto
             let resultBuscarID = await buscarAdministrador(id)
-
-            //se a função encontrar o produto o atributo do json será verdadeiro
-            //isso significa que o produto existe na base, caso não retorne true,
-            //o retorno da função poderá ser um 400 ou 404 ou até mesmo um 500
             if (resultBuscarID.status) {
                 let validar = await validarDados(administrador)
 
-                //validação de campos obrigatórios para a atualização (body)
                 if (!validar) {
-                    //Adiciono o atributo ID do produto no JSON para ser enviado ao DAO
+              
                     administrador.id = Number(id)
 
-                    //chama a função do DAO para atualizar o produto ( dados e ID)
+                 
                     let result = await administradorDAO.updateAdministrador(administrador)
 
                     if (result) {
@@ -92,23 +85,23 @@ const atualizarAdministrador = async function (administrador, id, contentType) {
                             message.SUCCESS_UPDATE_ITEM.message
                         message.DEFAULT_MESSAGE.response = administrador
 
-                        return message.DEFAULT_MESSAGE //200 (atualizado)
+                        return message.DEFAULT_MESSAGE
                     } else {
-                        return message.ERROR_INTERNAL_SERVER_MODEL //500
+                        return message.ERROR_INTERNAL_SERVER_MODEL 
 
                     }
                 } else {
-                    return validar //400
+                    return validar 
                 }
             } else {
-                return resultBuscarID //400, 404 ou 500
+                return resultBuscarID
             }
 
         } else {
-            return message.ERROR_CONTENT_TYPE //415
+            return message.ERROR_CONTENT_TYPE 
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 ( controller)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
     }
 }
 
@@ -125,30 +118,27 @@ const listarAdministrador = async function () {
                 message.DEFAULT_MESSAGE.response.count = result.length
                 message.DEFAULT_MESSAGE.response.administrador = result
 
-                return message.DEFAULT_MESSAGE //200 (dados do produto)
+                return message.DEFAULT_MESSAGE 
             } else {
-                return message.ERROR_NOT_FOUND //404
+                return message.ERROR_NOT_FOUND 
             }
         } else {
-            return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
+            return message.ERROR_INTERNAL_SERVER_MODEL 
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500(controller)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
     }
 
 }
 
-//Função para buscar um produto pelo ID
 const buscarAdministrador = async function (id) {
 
-    //Criando um clone do objeto JSON para manipular a sua estrutura local sem modificar a original
     let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
-        //Validação para garantir que o ID seja válido
         if (id == undefined || id == '' || id == null || isNaN(id) || id <= 0) {
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
-            return message.ERROR_BAD_REQUEST //400
+            return message.ERROR_BAD_REQUEST
         } else {
             let result = await administradorDAO.selectByIdAdministrador(id)
 
@@ -161,42 +151,38 @@ const buscarAdministrador = async function (id) {
                         message.SUCCESS_RESPONSE.status_code
                     message.DEFAULT_MESSAGE.response.administrador = result
 
-                    return message.DEFAULT_MESSAGE //200
+                    return message.DEFAULT_MESSAGE 
                 } else {
-                    return message.ERROR_NOT_FOUND //400
+                    return message.ERROR_NOT_FOUND
                 }
             } else {
-                return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
+                return message.ERROR_INTERNAL_SERVER_MODEL
             }
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 (controller)
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
-//Função para excluir um produto
 const excluirAdministrador = async function (id) {
     let message = JSON.parse(JSON.stringify(configMessage))
 
     try {
-        //Validação do erro 400 e 404
         let resultBuscarID = await buscarAdministrador(id)
 
-        //Validação para verificar se o status é verdadeiro ( se existe produto)
         if (resultBuscarID.status) {
-            //Chamar a função do DAO para excluir o produto
             let result = await administradorDAO.deleteAdministrador(id)
 
             if (result) {
-                return message.SUCCESS_DELETED_ITEM //200 (registro excluído)
+                return message.SUCCESS_DELETED_ITEM
             } else {
-                return message.ERROR_INTERNAL_SERVER_MODEL //500 (model)
+                return message.ERROR_INTERNAL_SERVER_MODEL 
             }
         } else {
-            return resultBuscarID //400 ou 404
+            return resultBuscarID
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER //500 controler
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
@@ -210,20 +196,17 @@ const logarAdministrador = async function (administrador, contentType) {
 
             if (!administrador.email || !administrador.senha) {
                 message.ERROR_BAD_REQUEST.field = '[EMAIL] ou [SENHA] não informados'
-                return message.ERROR_BAD_REQUEST // 400
+                return message.ERROR_BAD_REQUEST 
             }
 
-            // Busca só pelo email no banco
             let result = await administradorDAO.selectLoginAdministrador(administrador.email)
 
             if (result) {
                 let admin = result[0]
 
-                // Compara a senha digitada com o hash do banco
                 let senhaValida = await bcrypt.compare(administrador.senha, admin.senha)
 
                 if (senhaValida) {
-                    // Gera o token JWT
                     let token = jwt.sign(
                         { id: admin.id, email: admin.email },
                         JWT_SECRET,
@@ -242,22 +225,22 @@ const logarAdministrador = async function (administrador, contentType) {
                         }
                     }
 
-                    return message.DEFAULT_MESSAGE // 200
+                    return message.DEFAULT_MESSAGE
 
                 } else {
-                    return message.ERROR_UNAUTHORIZED // 401
+                    return message.ERROR_UNAUTHORIZED 
                 }
 
             } else {
-                return message.ERROR_NOT_FOUND // 404
+                return message.ERROR_NOT_FOUND 
             }
 
         } else {
-            return message.ERROR_CONTENT_TYPE // 415
+            return message.ERROR_CONTENT_TYPE
         }
     } catch (error) {
         console.log(error)
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER // 500
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
     }
 }
 
@@ -268,7 +251,6 @@ const verificarToken = function (req, res, next) {
         return res.status(401).json({ status: false, message: 'Token não fornecido.' })
     }
 
-    // Remove o "Bearer " se vier no formato padrão
     if (token.startsWith('Bearer ')) {
         token = token.slice(7)
     }

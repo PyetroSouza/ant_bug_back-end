@@ -1,6 +1,6 @@
 /*************************************************************************
 * Objetivo : Arquivo responsável pela validação, tratamento e manipulação
-* de dados para o CRUD de produto
+* de dados para o CRUD de Subcategoria
 * Data: 12/06/2026
 * Autor : Pyetro Ferreira
 * Versão : 1.0
@@ -118,7 +118,7 @@ const buscarSubcategoria = async function (id) {
         if (id == undefined || String(id).replaceAll(' ', '') == '' || id == null || isNaN(id) || id <= 0) {
             customMessage.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
 
-            return customMessage.ERROR_BAD_REQUEST //400
+            return customMessage.ERROR_BAD_REQUEST
 
         } else {
             let result = await subcategoriaDAO.selectByIdSubcategoria(id)
