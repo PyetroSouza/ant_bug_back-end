@@ -95,7 +95,6 @@ const selectProdutoByIdCategoria = async function (idCategoria) {
             return false
         }
     } catch (error) {
-        console.log('ERRO selectProdutoByIdCategoria:', error.message)
         return false
     }
 }
@@ -116,7 +115,6 @@ const selectCategoriaByIdProduto = async function (idProduto) {
             return false
         }
     } catch (error) {
-        console.log('ERRO selectCategoriaByIdProduto:', error.message)
         return false
     }
 }

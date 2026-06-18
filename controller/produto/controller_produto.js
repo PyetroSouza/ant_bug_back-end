@@ -14,7 +14,6 @@ const inserirNovoProduto = async function (produto, contentType) {
 
     let message = JSON.parse(JSON.stringify(configMessage))
     try {
-
         if (String(contentType).toUpperCase().includes('MULTIPART/FORM-DATA')) {
             let validar = await validarDados(produto)
 

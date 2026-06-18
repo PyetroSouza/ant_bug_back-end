@@ -15,7 +15,7 @@ const bodyParserJSON = bodyParser.json()
 const multer = require('multer')
 const upload = multer()
 
-router.post('/', upload.none(), bodyParserJSON, async function (request, response) {
+router.post('/', upload.single('imagem'), bodyParserJSON, async function (request, response) {
     let dados = request.body
     let contentType = request.headers['content-type']
     let result = await controllerProduto.inserirNovoProduto(dados, contentType)

@@ -62,7 +62,6 @@ const selectAllCategorias = async function () {
     }
   }
   catch (error) {
-    console.log(error)
     return false
   }
 }

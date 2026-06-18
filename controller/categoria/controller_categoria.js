@@ -110,7 +110,6 @@ const atualizarCategoria = async function (categoria, id, contentType) {
             return message.ERROR_CONTENT_TYPE 
         }
     } catch (error) {
-        console.log(error)
         return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
