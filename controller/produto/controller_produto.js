@@ -18,10 +18,10 @@ const inserirNovoProduto = async function (produto, contentType) {
             let validar = await validarDados(produto)
 
             if (validar) {
-                return validar 
+                return validar
             } else {
                 let result = await produtoDAO.insertProduto(produto)
-                if (result) { 
+                if (result) {
                     produto.id = result
 
                     message.DEFAULT_MESSAGE.status = message.SUCCESS_CREATED_ITEM.status
@@ -30,8 +30,8 @@ const inserirNovoProduto = async function (produto, contentType) {
                     message.DEFAULT_MESSAGE.response = produto
 
                     return message.DEFAULT_MESSAGE
-                } else { 
-                    return message.ERROR_INTERNAL_SERVER_MODEL 
+                } else {
+                    return message.ERROR_INTERNAL_SERVER_MODEL
                 }
 
             }
@@ -39,7 +39,7 @@ const inserirNovoProduto = async function (produto, contentType) {
             return message.ERROR_CONTENT_TYPE
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
@@ -70,21 +70,21 @@ const atualizarProduto = async function (produto, id, contentType) {
 
                         return message.DEFAULT_MESSAGE
                     } else {
-                        return message.ERROR_INTERNAL_SERVER_MODEL 
+                        return message.ERROR_INTERNAL_SERVER_MODEL
 
                     }
                 } else {
                     return validar
                 }
             } else {
-                return resultBuscarID 
+                return resultBuscarID
             }
 
         } else {
-            return message.ERROR_CONTENT_TYPE 
+            return message.ERROR_CONTENT_TYPE
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
@@ -101,15 +101,15 @@ const listarProduto = async function () {
                 message.DEFAULT_MESSAGE.response.count = result.length
                 message.DEFAULT_MESSAGE.response.produto = result
 
-                return message.DEFAULT_MESSAGE 
+                return message.DEFAULT_MESSAGE
             } else {
-                return message.ERROR_NOT_FOUND 
+                return message.ERROR_NOT_FOUND
             }
         } else {
-            return message.ERROR_INTERNAL_SERVER_MODEL 
+            return message.ERROR_INTERNAL_SERVER_MODEL
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
@@ -121,7 +121,7 @@ const buscarProduto = async function (id) {
     try {
         if (id == undefined || id == '' || id == null || isNaN(id)) {
             message.ERROR_BAD_REQUEST.field = '[ID] INVÁLIDO'
-            return message.ERROR_BAD_REQUEST 
+            return message.ERROR_BAD_REQUEST
         } else {
             let result = await produtoDAO.selectByIdProduto(id)
 
@@ -134,16 +134,16 @@ const buscarProduto = async function (id) {
                         message.SUCCESS_RESPONSE.status_code
                     message.DEFAULT_MESSAGE.response.produto = result
 
-                    return message.DEFAULT_MESSAGE 
+                    return message.DEFAULT_MESSAGE
                 } else {
-                    return message.ERROR_NOT_FOUND 
+                    return message.ERROR_NOT_FOUND
                 }
             } else {
-                return message.ERROR_INTERNAL_SERVER_MODEL 
+                return message.ERROR_INTERNAL_SERVER_MODEL
             }
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 }
 
@@ -157,15 +157,15 @@ const excluirProduto = async function (id) {
             let result = await produtoDAO.deleteProduto(id)
 
             if (result) {
-                return message.SUCCESS_DELETED_ITEM 
+                return message.SUCCESS_DELETED_ITEM
             } else {
-                return message.ERROR_INTERNAL_SERVER_MODEL 
+                return message.ERROR_INTERNAL_SERVER_MODEL
             }
         } else {
-            return resultBuscarID 
+            return resultBuscarID
         }
     } catch (error) {
-        return message.ERROR_INTERNAL_SERVER_CONTROLLER 
+        return message.ERROR_INTERNAL_SERVER_CONTROLLER
     }
 
 }
@@ -175,7 +175,7 @@ const validarDados = async function (produto) {
 
     if (produto.nome == undefined || produto.nome == '' || produto.nome == null || produto.nome.length > 80) {
         message.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
-        return message.ERROR_BAD_REQUEST 
+        return message.ERROR_BAD_REQUEST
     } else {
         return false
     }

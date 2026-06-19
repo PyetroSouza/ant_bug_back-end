@@ -61,7 +61,7 @@ const atualizarCategoriaProduto = async function (categoriaProduto, id) {
                     customMessage.DEFAULT_MESSAGE.message = customMessage.SUCCESS_UPDATE_ITEM.message
                     customMessage.DEFAULT_MESSAGE.response = categoriaProduto
 
-                    return customMessage.DEFAULT_MESSAGE 
+                    return customMessage.DEFAULT_MESSAGE
                 } else {
                     return customMessage.ERROR_INTERNAL_SERVER_MODEL
                 }
@@ -240,6 +240,21 @@ const excluirProdutoIdCategoria = async function (idCategoria) {
     }
 }
 
+const excluirCategoriaIdProduto = async function (idProduto) {
+    let customMessage = JSON.parse(JSON.stringify(configMessage))
+    try {
+        let result = await categoriaProdutoDAO.deleteCategoriaByIdProduto(idProduto)
+
+        if (result) {
+            return customMessage.SUCCESS_DELETED_ITEM
+        } else {
+            return customMessage.ERROR_INTERNAL_SERVER_MODEL
+        }
+    } catch (error) {
+        return customMessage.ERROR_INTERNAL_SERVER_CONTROLLER
+    }
+}
+
 const validarDados = async function (categoriaProduto) {
     let customMessage = JSON.parse(JSON.stringify(configMessage))
 
@@ -263,5 +278,6 @@ module.exports = {
     buscarProdutoIdCategoria,
     buscarCategoriasIdProduto,
     excluirCategoriaProduto,
-    excluirProdutoIdCategoria
+    excluirProdutoIdCategoria,
+    excluirCategoriaIdProduto
 }

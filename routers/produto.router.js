@@ -39,7 +39,7 @@ router.get('/:id', async function (request, response) {
     response.json(result)
 })
 
-router.put('/:id',upload.none(), bodyParserJSON, async function (request, response) {
+router.put('/:id', upload.single('imagem'), bodyParserJSON, async function (request, response) {
     let contentType = request.headers['content-type']
     let id = request.params.id
     let dados = request.body

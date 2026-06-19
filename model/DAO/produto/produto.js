@@ -14,6 +14,8 @@ const knexConection = knex(knexDataBaseConfig.development)
 
 const insertProduto = async function (produto) {
     try {
+        let imagem = produto.imagem || ""
+
         let sql = `insert into tbl_produto(
         nome,
         descricao,
@@ -23,7 +25,7 @@ const insertProduto = async function (produto) {
         replace("${produto.nome}", "'",""),
         replace("${produto.descricao}", "'", ""),
         replace("${produto.detalhes}", "'", ""),
-        replace("${produto.imagem}", "'", "")
+        replace("${imagem}", "'", "")
         );`
         let result = await knexConection.raw(sql)
         if (result) {
@@ -38,11 +40,14 @@ const insertProduto = async function (produto) {
 
 const updateProduto = async function (produto) {
     try {
+
+        let imagem = produto.imagem || ''
+
         let sql = `update tbl_produto set
     nome    = '${produto.nome}',
     descricao = '${produto.descricao}',
     detalhes = '${produto.detalhes}',
-    imagem = '${produto.imagem}' 
+    imagem = '${imagem}' 
      where id = ${produto.id}`
 
         let result = await knexConection.raw(sql)

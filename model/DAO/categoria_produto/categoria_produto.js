@@ -28,6 +28,7 @@ const insertCategoriaProduto = async function (categoriaProduto) {
             return false
         }
     } catch (error) {
+        console.log('ERRO insertCategoriaProduto:', error)
         return false
     }
 }

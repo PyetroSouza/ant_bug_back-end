@@ -92,3 +92,27 @@ BEGIN
 END$$
 
 DELIMITER ;
+
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Grãos', 1);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Doces Veganos', 1);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Congelados', 1);
+
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Batons', 2);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Cremes Faciais', 2);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Protetor Solar', 2);
+
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Camisetas', 3);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Calçados', 3);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Casacos', 3);
+
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Lava-Louças', 4);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Sabão em Pó', 4);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Desinfetante', 4);
+
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Shampoo Sólido', 5);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Desodorante', 5);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Creme Dental', 5);
+
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Bolsas', 6);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Cintos', 6);
+INSERT INTO tbl_subcategoria (nome, id_categoria) VALUES ('Carteiras', 6);
